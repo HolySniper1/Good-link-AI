@@ -1,0 +1,197 @@
+import { useState, useEffect } from "react";
+
+export default function FoodLinkAIPlus() {
+  const [location, setLocation] = useState("Maroua, Cameroon");
+  const [crop, setCrop] = useState("Maize");
+  const [surplus, setSurplus] = useState("");
+  const [tips, setTips] = useState("");
+  const [weather, setWeather] = useState(null);
+  const [marketData, setMarketData] = useState(null);
+  const [matchResult, setMatchResult] = useState("");
+
+  const OPENWEATHER_API_KEY = "YOUR_OPENWEATHER_API_KEY";
+
+  // Fetch weather for location (mock simple)
+  useEffect(() => {
+    async function fetchWeather() {
+      try {
+        const city = location.split(",")[0].trim();
+        const res = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${OPENWEATHER_API_KEY}&units=metric`
+        );
+        const data = await res.json();
+        if (data.weather) setWeather(data);
+      } catch (error) {
+        console.error("Weather fetch error", error);
+      }
+    }
+    fetchWeather();
+  }, [location]);
+
+  // Mock market data for supply/demand
+  useEffect(() => {
+    // This would come from real APIs or datasets in production
+    const mockMarketData = {
+      Maize: { demand: 80, supply: 60 },
+      Cassava: { demand: 40, supply: 70 },
+      Tomatoes: { demand: 90, supply: 50 },
+    };
+    setMarketData(mockMarketData[crop] || { demand: 50, supply: 50 });
+  }, [crop]);
+
+  const getClimateSmartTips = () => {
+    if (crop.toLowerCase().includes("maize")) {
+      setTips(
+        "Use drought-resistant maize varieties. Mulch to retain moisture. Consider intercropping with legumes."
+      );
+    } else if (crop.toLowerCase().includes("cassava")) {
+      setTips(
+        "Harvest on time to avoid rot. Use pest-resistant cuttings. Process surplus into gari or flour."
+      );
+    } else if (crop.toLowerCase().includes("tomato")) {
+      setTips(
+        "Use drip irrigation, prune regularly, and avoid chemical pesticides. Rotate crops annually."
+      );
+    } else {
+      setTips(
+        "Use compost, avoid chemical overuse, rotate crops, and monitor weather updates regularly."
+      );
+    }
+  };
+
+  // Simple surplus match logic
+  const submitSurplus = () => {
+    // Example: if supply > demand, match with NGO
+    if (marketData && marketData.supply > marketData.demand) {
+      setMatchResult(
+        `Surplus food logged: "${surplus}". Matched with nearby NGO for pickup within 24h.`
+      );
+    } else {
+      setMatchResult(
+        `Surplus food logged: "${surplus}". Local market demand is high, consider selling there first.`
+      );
+    }
+  };
+
+  return (
+    <div
+      style={{
+        maxWidth: 600,
+        margin: "auto",
+        padding: 20,
+        fontFamily: "Arial, sans-serif",
+      }}
+    >
+      <h1 style={{ textAlign: "center" }}>FoodLink AI+</h1>
+      <p style={{ textAlign: "center", color: "#666" }}>
+        Smart food management & climate-smart farming
+      </p>
+
+      <section style={{ marginBottom: 30 }}>
+        <h2>1. Your Location</h2>
+        <input
+          type="text"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+          placeholder="e.g. Maroua, Cameroon"
+          style={{ width: "100%", padding: 8, fontSize: 16 }}
+        />
+        {weather && (
+          <p style={{ marginTop: 8 }}>
+            Weather in {weather.name}: {weather.weather[0].description},{" "}
+            {weather.main.temp}°C
+          </p>
+        )}
+      </section>
+
+      <section style={{ marginBottom: 30 }}>
+        <h2>2. Crop Info & Climate-Smart Tips</h2>
+        <input
+          type="text"
+          value={crop}
+          onChange={(e) => setCrop(e.target.value)}
+          placeholder="e.g. Maize"
+          style={{ width: "100%", padding: 8, fontSize: 16 }}
+        />
+        <button
+          onClick={getClimateSmartTips}
+          style={{
+            marginTop: 10,
+            padding: "10px 15px",
+            backgroundColor: "#28a745",
+            color: "#fff",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          Get Climate-Smart Tips
+        </button>
+        {tips && (
+          <div
+            style={{
+              marginTop: 15,
+              backgroundColor: "#d4edda",
+              padding: 10,
+              borderRadius: 5,
+              color: "#155724",
+            }}
+          >
+            {tips}
+          </div>
+        )}
+        {marketData && (
+          <p style={{ marginTop: 15 }}>
+            Market Demand: {marketData.demand} | Market Supply:{" "}
+            {marketData.supply}
+          </p>
+        )}
+      </section>
+
+      <section style={{ marginBottom: 30 }}>
+        <h2>3. Log Surplus Food for Sharing</h2>
+        <textarea
+          rows={3}
+          value={surplus}
+          onChange={(e) => setSurplus(e.target.value)}
+          placeholder="Describe your surplus, e.g. 50kg maize, 10 trays tomatoes"
+          style={{ width: "100%", padding: 8, fontSize: 16 }}
+        />
+        <button
+          onClick={submitSurplus}
+          style={{
+            marginTop: 10,
+            padding: "10px 15px",
+            backgroundColor: "#007bff",
+            color: "#fff",
+            border: "none",
+            cursor: "pointer",
+            width: "100%",
+          }}
+        >
+          Submit Surplus
+        </button>
+        {matchResult && (
+          <div
+            style={{
+              marginTop: 15,
+              backgroundColor: "#cce5ff",
+              padding: 10,
+              borderRadius: 5,
+              color: "#004085",
+            }}
+          >
+            {matchResult}
+          </div>
+        )}
+      </section>
+
+      <section>
+        <h2>4. Post-Harvest & Storage Alerts</h2>
+        <p>
+          Avoid open-air drying during forecasted rains. Consider cold storage
+          facilities nearby.
+        </p>
+      </section>
+    </div>
+  );
+}
