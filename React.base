@@ -1,0 +1,146 @@
+ import { useState, useEffect } from "react";
+
+export default function FoodLinkAIPlus() {
+  const [location, setLocation] = useState("");
+  const [crop, setCrop] = useState("");
+  const [surplus, setSurplus] = useState("");
+  const [tips, setTips] = useState("");
+  const [weather, setWeather] = useState(null);
+  const [matchResult, setMatchResult] = useState("");
+
+  // Example: simple climate-smart tips logic
+  const getClimateSmartTips = () => {
+    if (crop.toLowerCase().includes("maize")) {
+      setTips(
+        "Use drought-resistant maize varieties. Mulch to retain moisture. Intercrop with legumes."
+      );
+    } else if (crop.toLowerCase().includes("cassava")) {
+      setTips(
+        "Harvest timely to avoid rot. Use pest-resistant cuttings. Process surplus into flour."
+      );
+    } else {
+      setTips(
+        "Use compost, rotate crops, and monitor weather updates regularly."
+      );
+    }
+  };
+
+  // Mock weather data fetch (replace with real API later)
+  useEffect(() => {
+    if (!location) {
+      setWeather(null);
+      return;
+    }
+    // Mock: if location includes 'Cameroon', show sunny; else cloudy
+    if (location.toLowerCase().includes("cameroon")) {
+      setWeather({ description: "Sunny", temp: 30 });
+    } else {
+      setWeather({ description: "Cloudy", temp: 22 });
+    }
+  }, [location]);
+
+  // Surplus submission mock
+  const submitSurplus = () => {
+    if (!surplus) {
+      setMatchResult("Please enter your surplus food details.");
+      return;
+    }
+    setMatchResult(
+      `Surplus "${surplus}" logged successfully! Local NGOs will be notified for pickup.`
+    );
+  };
+
+  return (
+    <div style={{ maxWidth: 600, margin: "auto", padding: 20, fontFamily: "sans-serif" }}>
+      <h1 style={{ textAlign: "center" }}>FoodLink AI+</h1>
+      <p style={{ textAlign: "center", color: "#555" }}>Smart food management for farmers and communities</p>
+
+      <section style={{ marginBottom: 30 }}>
+        <label>
+          Location:
+          <input
+            type="text"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            placeholder="e.g., Maroua, Cameroon"
+            style={{ width: "100%", padding: 8, fontSize: 16, marginTop: 5 }}
+          />
+        </label>
+        {weather && (
+          <p style={{ marginTop: 10 }}>
+            Weather: {weather.description}, {weather.temp}°C
+          </p>
+        )}
+      </section>
+
+      <section style={{ marginBottom: 30 }}>
+        <label>
+          Crop:
+          <input
+            type="text"
+            value={crop}
+            onChange={(e) => setCrop(e.target.value)}
+            placeholder="e.g., Maize"
+            style={{ width: "100%", padding: 8, fontSize: 16, marginTop: 5 }}
+          />
+        </label>
+        <button
+          onClick={getClimateSmartTips}
+          style={{ marginTop: 10, padding: "10px 15px", cursor: "pointer" }}
+        >
+          Get Climate-Smart Tips
+        </button>
+        {tips && (
+          <div
+            style={{
+              marginTop: 15,
+              backgroundColor: "#d4edda",
+              padding: 10,
+              borderRadius: 5,
+              color: "#155724",
+            }}
+          >
+            {tips}
+          </div>
+        )}
+      </section>
+
+      <section style={{ marginBottom: 30 }}>
+        <label>
+          Surplus Food Details:
+          <textarea
+            rows={3}
+            value={surplus}
+            onChange={(e) => setSurplus(e.target.value)}
+            placeholder="e.g., 50kg maize, 10 trays tomatoes"
+            style={{ width: "100%", padding: 8, fontSize: 16, marginTop: 5 }}
+          />
+        </label>
+        <button
+          onClick={submitSurplus}
+          style={{
+            marginTop: 10,
+            padding: "10px 15px",
+            cursor: "pointer",
+            width: "100%",
+          }}
+        >
+          Submit Surplus
+        </button>
+        {matchResult && (
+          <div
+            style={{
+              marginTop: 15,
+              backgroundColor: "#cce5ff",
+              padding: 10,
+              borderRadius: 5,
+              color: "#004085",
+            }}
+          >
+            {matchResult}
+          </div>
+        )}
+      </section>
+    </div>
+  );
+}
