@@ -13,6 +13,11 @@
 - Firebase
 - OpenWeatherMap API
 - Future: Google AI / ML yield prediction
+🔹 A Bluetooth or WiFi data input system so robot soil data can flow into the app.
+🔹 A soil dashboard screen to display moisture/pH readings.
+🔹 Decision logic that combines soil + weather data to recommend crops or actions.
+🔹 Backend logic to handle more advanced features like AI yield prediction.
+🔹 User authentication and farmer profiles if needed.
 
 ## Getting Started
 ```bash
