@@ -19,6 +19,13 @@
 🔹 Backend logic to handle more advanced features like AI yield prediction.
 🔹 User authentication and farmer profiles if needed.
 
+
+
+✅ The app receives soil data from your robot
+✅ The soil dashboard screen is available
+✅ The app is connected to sensors (Bluetooth/WiFi data input)
+✅ Fully implemented crop recommendation logic based on soil + weather data
+
 ## Getting Started
 ```bash
 npm install
